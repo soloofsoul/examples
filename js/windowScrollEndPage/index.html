@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Window scroll end of page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html, body, #divForScroll {
+            height: 100%;
+        }
+        #divForScroll {
+            background-color: #999999;
+            margin: 10px;
+            border: 3px solid #FFC6C6;
+            color: #FFD9D9;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 30px;
+        }
+        .newElement {
+            margin: 25px 10px 25px 10px;
+            padding: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="divForScroll">
+        <p>This is div with content.</p>
+        <p>Scroll it to the end and you will have an action.</p>
+        <p>This is good for loading additional content to the list if user has scrolled to end of list.</p>
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var myObj = {
+            newElementsCounter: 1,
+            $bodyObj: $('body'),
+            getRandomColor: function() {
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++ ) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        };
+        $(window).scroll(function(){
+            if(document.addEventListener) {
+                if (document.body.scrollHeight == document.body.scrollTop + window.innerHeight) {
+
+                        myObj.$bodyObj.append('<div class="newElement" style="background-color: ' + myObj.getRandomColor() + '">' + myObj.newElementsCounter + '. This element is added after scrolling to the end of page.</div>');
+                        myObj.newElementsCounter++;
+                    }
+                }
+
+// this is handler for IE
+//                else {
+//                    if($(window).scrollTop() != 0) {
+//                        if( $(window).height() + $(window).scrollTop() >= $(document).height() )
+//                        {
+//                            alert("Bottom 2!");
+//                        }
+//                    }
+//                }
+        });
+    });
+</script>
+</body>
+</html>
