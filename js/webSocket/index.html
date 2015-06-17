@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Websocket</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #screen {
+            background-color: #000;
+            margin: 10px;
+            padding: 15px;
+            color: #fff;
+        }
+        #screen p {
+            line-height: 30px;
+        }
+        .client {
+            color: rgb(215, 185, 152);
+        }
+        .server {
+            color: lime;
+        }
+        #message {
+            display: block;
+            margin: 0px 0px 10px 10px;
+            border-radius: 4px;
+            border: 1px solid #B6B6B6;
+            outline: none;
+            width: 200px;
+            padding: 5px 0px 6px 10px;
+            color: #919191;
+            font-weight: bold;
+        }
+        #message:focus {
+            color: #4D4D4D;
+        }
+        button {
+            border: none;
+            background-color: #717171;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 3px;
+            padding: 5px 20px 6px 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #connect {
+            margin-left: 10px;
+        }
+        button:disabled {
+            background-color: #EDEDED;
+            cursor: auto;
+        }
+    </style>
+</head>
+<body>
+<div id="screen">
+    <p>This is LOG box.</p>
+</div>
+<input id="message" />
+<button id="connect">Connect</button>
+<button id="send">Send</button>
+<button id="clear">Clear</button>
+<button id="close">Close</button>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var socket = null,
+        url = 'ws://localhost:2207',
+        $sendBtn = $('#send'),
+        $closeBtn = $('#close'),
+        $connectBtn = $('#connect'),
+        $screen = $('#screen'),
+        $message = $('#message');
+
+    function connect() {
+        socket = new WebSocket(url);
+
+        if(!socket || socket == undefined) return false;
+
+        socket.onopen = function() {
+            writeToScreen('<span class="client">Client: Connected to server ' + url + '</span>');
+        };
+        socket.onerror = function() {
+            writeToScreen('Error!');
+        };
+        socket.onclose = function() {
+            $sendBtn.prop('disabled', true);
+            $closeBtn.prop('disabled', true);
+            $connectBtn.prop('disabled', false);
+            writeToScreen('<span class="client">Socket closed!</span>');
+        };
+        socket.onmessage = function(e){
+            writeToScreen('<span class="server">Server: ' + e.data + '</span>');
+        };
+
+        $sendBtn.prop('disabled', false);
+        $closeBtn.prop('disabled', false);
+        $connectBtn.prop('disabled', true);
+    }
+    function close() {
+        socket.close();
+    }
+    function writeToScreen(msg) {
+        $screen.append('<p>' + msg + '</p>');
+        $screen.animate({scrollTop: $screen.height()}, 10);
+    }
+    function clearScreen() {
+        $screen.html('');
+    }
+    function sendMessage(){
+        if(!socket || socket == undefined) return false;
+
+        var mess = $.trim($message.val());
+        if(mess == '') return;
+        writeToScreen('<span class="client">Client: ' + mess + '</span>');
+        socket.send(mess);
+        $message.val('');
+    }
+    $(document).ready(function(){
+        $('message').focus();
+
+        $('#send').click(function(){
+            sendMessage();
+        });
+        $('#connect').click(function(){
+            connect();
+        });
+        $('#close').click(function(){
+            close();
+        });
+        $('#clear').click(function(){
+            clearScreen();
+        });
+    });
+</script>
+</body>
+</html>
