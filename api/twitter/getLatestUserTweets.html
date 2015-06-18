@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Get latest user tweets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+            background-color: #e5e5e5;
+        }
+        #tweetsHolder {
+            width: 250px;
+            border: 1px solid #fff;
+            margin: 10px;
+            border-radius: 3px;
+            padding: 10px 10px 10px 10px;
+            display: none;
+        }
+        #tweetsHolder h2 {
+            font-size: 17px;
+            display: inline-block;
+        }
+        #tweetsHolder h2 a:hover {
+            text-decoration: none;
+        }
+        #tweetsHolder .userImg {
+            display: inline-block;
+            vertical-align: middle;
+            border-radius: 24px;
+            width: 48px;
+            margin: 0px 15px 0px 5px;
+            border: 2px solid #fff;
+        }
+        .tweet {
+            background-color: #fff;
+            margin: 10px 0px 5px 0px;
+            border-radius: 3px;
+            padding: 2px 10px 5px 10px;
+        }
+        .tweet p {
+            font-size: 13px;
+            line-height: 16px;
+            color: #6F6F6F;
+        }
+    </style>
+</head>
+<body>
+<div id="tweetsHolder"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var pageObj = {
+        options: {
+            url: 'myTwitterService.php',
+            method: 'get',
+            dataType: 'json',
+            success: $.proxy(this.handleTwitterResponse, this)
+        }
+    };
+    function preprocessTwitterText(tweet) {
+        var resultText = tweet.text,
+            urls = tweet.entities.urls,
+            hashtags = tweet.entities.hashtags,
+            tempUrl,
+            tempHashTag;
+
+        //preprocess URLs
+        for(var k in urls) {
+            tempUrl = urls[k].url;
+            resultText = resultText.replace(tempUrl, '<a target="_blank" href="' + tempUrl + '">' + tempUrl + '</a>');
+        }
+        for(var k in hashtags) {
+            tempHashTag = hashtags[k].text;
+            resultText = resultText.replace('#' + tempHashTag, '');
+        }
+        return resultText;
+    }
+    function handleTwitterResponse(data) {
+        var tweet = {},
+            tweetHtml,
+            $tweetsHolder = $('#tweetsHolder'),
+            username = '';
+
+        if(data.length > 0) {
+
+            username = data[0].user.screen_name;
+            $tweetsHolder.fadeIn().html('<img class="userImg" src="' + data[0].user.profile_image_url + '" alt="#morozovych" /><h2><a target="_blank" href="https://twitter.com/' + username + '">Twitter: ' + username + '</a></h2>');
+
+            for(key in data) {
+                tweetHtml = '<div class="tweet">';
+                tweet = data[key];
+
+                tweetHtml += '<p>' + preprocessTwitterText(tweet) + '</p>';
+                tweetHtml += '</div>';
+                $tweetsHolder.append(tweetHtml);
+            }
+        };
+    }
+    $(document).ready(function(){
+        $.ajax(pageObj.options);
+    });
+</script>
+</body>
+</html>

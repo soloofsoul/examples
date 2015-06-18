@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Server-sent events</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #screen {
+            background-color: #000;
+            margin: 10px;
+            padding: 15px;
+            color: #fff;
+        }
+        #screen p {
+            line-height: 30px;
+        }
+        .message {
+            color: lime;
+        }
+        .error {
+            color: red;
+        }
+        .ping {
+            color: rgb(121, 121, 121);;
+        }
+        .open {
+            color: #A0B9FA;
+        }
+    </style>
+</head>
+<body>
+<div id="screen">
+    <p>This is LOG box. Connection will be closed manually after 3 minutes.</p>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    if (!!window.EventSource) {
+        var evtSource = new EventSource('ssedemo.php'),
+            $screen = $('#screen'),
+            counter = 1;
+
+        evtSource.addEventListener('message', function(e) {
+            writeToScreen('<span class="message">' + counter + '. Message: ' + e.data + '</span>');
+            counter++;
+        }, false);
+
+        evtSource.addEventListener('open', function(e) {
+            writeToScreen('<span class="open">' + counter + '. Open: Connection was opened.</span>');
+            counter++;
+        }, false);
+
+        evtSource.addEventListener('ping', function(e){
+            var obj = JSON.parse(e.data);
+            writeToScreen('<span class="ping">' + counter + '. Ping at ' + obj.time + '</span>');
+            counter++;
+        });
+
+        evtSource.addEventListener('error', function(e) {
+            // strange, but I can't see handling of this Close state in real example
+            if (e.target.readyState == EventSource.CLOSED) {
+                writeToScreen('<span class="closed">Closed: Connection was closed.</span>');
+            } else {
+                writeToScreen('<span class="error">Error: EventSource failed.</span>');
+            }
+        }, false);
+
+        setTimeout(function(){ evtSource.close(); }, 180000);
+        //evtSource.close();
+
+    } else {
+        // Result to xhr polling :(
+    }
+
+    function writeToScreen(msg) {
+        $screen.append('<p>' + msg + '</p>');
+        $screen.animate({scrollTop: $screen.height()}, 10);
+    }
+</script>
+</body>
+</html>
