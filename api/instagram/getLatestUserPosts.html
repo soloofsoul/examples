@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Instagram get latest user posts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+            background-color: #e5e5e5;
+        }
+        #instHolder {
+            width: 268px;
+            border: 1px solid #fff;
+            margin: 10px;
+            border-radius: 3px;
+            padding: 10px 10px 10px 10px;
+            display: none;
+        }
+        #instHolder h2 {
+            font-size: 17px;
+            display: inline-block;
+        }
+        #instHolder h2 a:hover {
+            text-decoration: none;
+        }
+        #instHolder .userImg {
+            display: inline-block;
+            vertical-align: middle;
+            border-radius: 24px;
+            width: 48px;
+            margin: 0px 15px 0px 5px;
+            border: 2px solid #fff;
+        }
+        .inst {
+            background-color: #fff;
+            margin: 10px 0px 5px 0px;
+            border-radius: 3px;
+            padding: 2px 10px 5px 10px;
+        }
+        .inst p {
+            font-size: 13px;
+            line-height: 16px;
+            color: #6F6F6F;
+        }
+        .inst img {
+            margin: 8px auto 8px auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div id="instHolder"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var pageObj = {
+        options: {
+            url: 'https://api.instagram.com/v1/users/1459318362/media/recent?access_token=1465794022.902c2d2.3fb5c14a1c984cf19429506090a29a4b&count=5&user-id=1459318362',
+            method: 'get',
+            dataType: 'jsonp',
+            success: $.proxy(this.handleInstagramResponse, this)
+        }
+    };
+    function handleInstagramResponse(resp) {
+        var data = resp.data,
+            $instHolder = $('#instHolder'),
+            inst = {},
+            username = '',
+            instHtml = '';
+
+        if(data.length > 0) {
+            username = data[0].user.username;
+            $instHolder.fadeIn().html('<img class="userImg" src="' + data[0].user.profile_picture + '" alt="morozovych_" /><h2><a target="_blank" href="https://instagram.com/' + username + '">Instagram: ' + username + '</a></h2>');
+
+            for(key in data) {
+                inst = data[key];
+                instHtml = '<div class="inst">';
+                console.log(data[key]);
+                instHtml += '<p>' + inst.caption.text + '</p>';
+                instHtml += '<img alt="" src="' + inst.images.thumbnail.url + '" />';
+                instHtml += '</div>';
+                $instHolder.append(instHtml);
+            }
+        }
+    }
+    $(document).ready(function(){
+        $.ajax(pageObj.options);
+    });
+</script>
+</body>
+</html>
