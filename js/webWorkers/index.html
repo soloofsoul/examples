@@ -39,6 +39,13 @@
         }
         #screen {
             background-color: #000;
+            padding: 10px;
+        }
+        #screen .window {
+            color: #fff;
+        }
+        #screen .worker {
+            color: lime;
         }
     </style>
 </head>
@@ -47,15 +54,58 @@
 <div id="container">
     <p><input id="firstInp" /><button id="firstBtn">Send data to worker</button></p>
     <p><input id="secondInp" /><button id="secondBtn">Send data to worker</button></p>
+    <p><button id="thirdBtn">Send from both inputs</button></p>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
     if(window.Worker) {
-        var myWorker = new Worker('worker.js');
-        console.log(myWorker);
-    }
-    $('#firstBtn').click(function(){
+        var pageObj = {
+            myWorker: new Worker('worker.js'),
+            firstInp: document.getElementById('firstInp'),
+            secondInp: document.getElementById('secondInp'),
+            firstBtn: document.getElementById('firstBtn'),
+            secondBtn: document.getElementById('secondBtn'),
+            thirdBtn: document.getElementById('thirdBtn'),
+            screen: document.getElementById('screen'),
 
-    });
+            firstBtnClickHandler: function(e) {
+                var pageObj = window.pageObj;
+                if(pageObj.firstInp.value !== '') {
+                    pageObj.myWorker.postMessage([pageObj.firstInp.value]);
+                    pageObj.writeToScreen('<span class="window">Window: sent value "' + pageObj.firstInp.value +  '" to worker</span>');
+                    pageObj.firstInp.value = '';
+                }
+            },
+            secondBtnClickHandler: function(e) {
+                var pageObj = window.pageObj;
+                if(pageObj.secondInp.value !== '') {
+                    pageObj.myWorker.postMessage([pageObj.secondInp.value]);
+                    pageObj.writeToScreen('<span class="window">Window: sent value "' + pageObj.secondInp.value +  '" to worker</span>');
+                    pageObj.secondInp.value = '';
+                }
+            },
+            thirdBtnClickHandler: function(e) {
+                var pageObj = window.pageObj;
+                if(pageObj.firstInp.value !== '' && pageObj.secondInp.value !== '') {
+                    pageObj.myWorker.postMessage([pageObj.firstInp.value, pageObj.secondInp.value]);
+                    pageObj.writeToScreen('<span class="window">Window: sent value "' + pageObj.firstInp.value +  ', ' + pageObj.secondInp.value + '" to worker</span>');
+                    pageObj.firstInp.value = '';
+                    pageObj.secondInp.value = '';
+                }
+            },
+            myWorkerMessageHandler: function(e) {
+                window.pageObj.writeToScreen('<span class="worker">Worker: ' + e.data + '</span>');
+            },
+            writeToScreen: function(msg) {
+                this.screen.innerHTML += '<p>' + msg + '</p>';
+            }
+        };
+
+        pageObj.firstBtn.addEventListener('click', pageObj.firstBtnClickHandler, false);
+        pageObj.secondBtn.addEventListener('click', pageObj.secondBtnClickHandler, false);
+        pageObj.thirdBtn.addEventListener('click', pageObj.thirdBtnClickHandler, false);
+        pageObj.myWorker.onmessage = pageObj.myWorkerMessageHandler;
+    }
 </script>
 </body>
 </html>
