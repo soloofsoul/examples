@@ -1,0 +1,23 @@
+{
+  "name": "Test",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Test application for application template",
+  "main": "",
+  "author": {
+    "name": "Grygorii Gavaleshko",
+    "email": "grygoriy@gavaleshko.org.ua"
+  },
+  "files": [],
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "del": "^2.2.0",
+    "run-sequence": "^1.1.5",
+    "gulp-connect": "^3.2.1",
+    "gulp-open": "^1.0.0",
+    "gulp-concat-css": "^2.2.0",
+    "gulp-clean-css": "^2.0.4"
+  }
+}
