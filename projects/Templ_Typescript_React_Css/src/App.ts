@@ -2,9 +2,8 @@
 
 import ReactDOM = require('react-dom');
 
-import TestComponent = require('./TestComp');
+import AppContainer = require('./comps/AppContainer');
 
 window.onload = () => {
-    console.log('Typescript app is ready');
-    ReactDOM.render(TestComponent({}), document.getElementById('root'));
+    ReactDOM.render(AppContainer({}), document.getElementById('root'));
 };
