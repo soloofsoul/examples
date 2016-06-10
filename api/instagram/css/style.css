@@ -1,0 +1,57 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100%;
+}
+body {
+    background: #e5e5e5;
+}
+.col {
+    float: left;
+    width: 290px;
+}
+#instaHolder {
+    min-height: 385px;
+}
+#instaHolder h2 {
+    font-family: Verdana,arial;
+    font-size: 13px;
+    color: #6d6d6d;
+    border-bottom: 1px solid #fff;
+    padding: 5px 10px;
+}
+#instaHolder h2 img {
+    width: 40px;
+    border-radius: 20px;
+    border: 2px solid #fff;
+    vertical-align: middle;
+}
+#instaHolder ul {
+    list-style-type: none;
+    margin: 5px;
+    max-height: 325px;
+    overflow-y: auto;
+}
+#instaHolder li {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 5px 5px 1px 5px;
+    margin-bottom: 5px;
+    background: #fff;
+    border-radius: 2px;
+}
+#instaHolder li img {
+    width: 60px;
+    vertical-align: middle;
+}
+#instaHolder li .postText {
+    display: inline-block;
+    vertical-align: middle;
+    width: 185px;
+    margin-left: 5px;
+    font-size: 9px;
+    font-family: Verdana, aril;
+    height: 60px;
+    overflow-y: auto;
+}
