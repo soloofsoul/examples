@@ -9,6 +9,17 @@ function EventDispatcher(o) {
             list[type].push(listener);
     };
 
+    o.removeEvent = function(type, listener) {
+        var listType = list[type],
+            index = -1;
+
+        if(listType) {
+            index = listType.indexOf(listener);
+            if(index > -1)
+                listType.splice(index,1);
+        }
+    };
+
     o.dispatchEvent = function(e){
         var a = list[e.type];
         if(a) {
@@ -20,12 +31,22 @@ function EventDispatcher(o) {
     }
 }
 
-var o = {};
+var o = {},
+    listener = function(e) {
+        console.log('a tick just happend', e.target, e.type);
+        console.log(e.target == o, e.target, o);
+    };
 EventDispatcher(o);
-o.addEvent('tick', function(e){
-    console.log('a tick just happend', e.target, e.type);
-    console.log(e.target == o, e.target, o);
+o.addEvent('tick', listener);
+
+o.dispatchEvent({
+    type: 'tick',
+    target: o
 });
+
+o.removeEvent('tick', listener);
+
+// nothing here, because event listener was removed
 o.dispatchEvent({
     type: 'tick',
     target: o
