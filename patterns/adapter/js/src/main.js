@@ -26,7 +26,7 @@ var contentDivEls = testObj.NQObj.query('#content'),
     contentDivEls1 = testObj.LAobj.query('#content'),
     contentDivSpanEls1 = testObj.LAobj.query('span', contentDivEls[0]);
 
-console.log('contentDivEls %O: ', contentDivEls[0]);
-console.log('contentDivSpanEls %O: ', contentDivSpanEls[0]);
-console.log('contentDivEls1 %O: ', contentDivEls1[0]);
-console.log('contentDivSpanEls1 %O: ', contentDivSpanEls1[0]);
+console.log('Library - contentDivEls: %O ', contentDivEls[0]);
+console.log('Library - contentDivSpanEls: %O ', contentDivSpanEls[0]);
+console.log('Adapter - contentDivEls1: %O ', contentDivEls1[0]);
+console.log('Adapter - contentDivSpanEls1: %O ', contentDivSpanEls1[0]);
