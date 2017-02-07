@@ -1,5 +1,4 @@
 // Sorting - QUICK, best-case complexity O(N log N)
-//
 console.log('QUICK sort');
 (function(){
     var array = [3,44,38, 3, 5,47,15,36,26,27,2,46,4,19,50,48],
